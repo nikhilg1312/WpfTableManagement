@@ -22,8 +22,8 @@ namespace TableManagement
     /// </summary>
     public partial class MainWindow : Window
     {
-        private ObservableCollection<ReservationDetails> reservedTables;
-        private ObservableCollection<Table> tables;
+        //public ObservableCollection<ReservationDetails> reservedTables;
+        //public ObservableCollection<Table> tables;
         DispatcherTimer timer_upcomings_15;
 
         public MainWindow()
@@ -36,7 +36,6 @@ namespace TableManagement
 
         private void Timer_upcomings_15_Tick(object sender, EventArgs e)
         {
-            Console.WriteLine("Inside timer :" + DateTime.Now);
             LoadUpcomingFreeTables();
             LoadUpcomingGuest();
         }
@@ -70,9 +69,8 @@ namespace TableManagement
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            reservedTables = MyStorage.ReadXML<ObservableCollection<ReservationDetails>>("reservedTables.xml");
-            Console.WriteLine(reservedTables.Count);
-            tables = MyStorage.ReadXML<ObservableCollection<Table>>("tables.xml");
+            //reservedTables = MyStorage.ReadXML<ObservableCollection<ReservationDetails>>("reservedTables.xml");
+            // = MyStorage.ReadXML<ObservableCollection<Table>>("tables.xml");
             //ObservableCollection<ReservationDetails>  reservedTables2 = GenerateReservations();
             //reservedTables = new ObservableCollection<ReservationDetails>(reservedTables1.Union(reservedTables2).ToList());
             //GetTableSchedule(reservedTables,DateTime.Today);
@@ -88,12 +86,11 @@ namespace TableManagement
             DrawVLines(Cvs_slot_1);
             DrawHLines(Cvs_slot_1);
 
-            var lst = from r in reservedTables orderby r.TableId where r.ReservationDate.Date.Equals(ipDate.Date) select r;
+            var lst = from r in App.reservedTables orderby r.TableId where r.ReservationDate.Date.Equals(ipDate.Date) select r;
             int[] tNum_all = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0 , 0 };
             //nice
             foreach (var item in lst)
             {
-                Console.WriteLine(item.TableId + "," + item.StartTime + "," + item.GuestName);
                 int tNum = tNum_all[item.TableId];
                 
                 Rectangle bar = new Rectangle();
@@ -192,7 +189,7 @@ namespace TableManagement
 
         private void LoadUpcomingFreeTables()
         {
-            var upg_lst = (from r in reservedTables
+            var upg_lst = (from r in App.reservedTables
                            orderby r.EndTime
                            where
                            r.ReservationDate.Date == DateTime.Today.Date &&
@@ -205,7 +202,7 @@ namespace TableManagement
 
         private void LoadUpcomingGuest()
         {
-            var upg_lst = (from r in reservedTables
+            var upg_lst = (from r in App.reservedTables
                            orderby r.StartTime
                            where
                            r.ReservationDate.Date == DateTime.Today.Date &&
@@ -218,13 +215,7 @@ namespace TableManagement
 
         private void GetTableSchedule(ObservableCollection<ReservationDetails> reservedTables, DateTime ipDate)
         {
-            Console.WriteLine("Inside GetSchedule :");
-
             var lst = from r in reservedTables orderby r.StartTime where r.ReservationDate.Date.Equals(ipDate.Date) select r;
-            foreach (var item in lst)
-            {
-                Console.WriteLine(item.TableId + "," + item.StartTime + "," + item.GuestName);
-            }
             dg_reservationOverview.ItemsSource = lst;
         }
 
@@ -232,43 +223,31 @@ namespace TableManagement
 
         private void Window_Closed(object sender, EventArgs e)
         {
-            MyStorage.SaveXML<ObservableCollection<ReservationDetails>>(reservedTables, "reservedTables.xml");
+            MyStorage.SaveXML<ObservableCollection<ReservationDetails>>(App.reservedTables, "reservedTables.xml");
         }
 
 
         private void Dp_DatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
-            GetTableSchedule(reservedTables, (DateTime)Dp_DatePicker.SelectedDate);
+            GetTableSchedule(App.reservedTables, (DateTime)Dp_DatePicker.SelectedDate);
             TryTimeSlot((DateTime)Dp_DatePicker.SelectedDate);
         }
 
         private void Btn_Search_Click(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine("Guest Number: " + Cbx_guest_number.Text);
-            Console.WriteLine("Date: " + Dtp_reservation_date.Text);
-            Console.WriteLine("Hrs:Min :" + Cbx_reservation_hours.Text + ":" + Cbx_reservation_minute.Text);
-            Console.WriteLine("Name :" + Tbx_reservation_name.Text);
             if ( !Cbx_guest_number.Text.Equals(".") & Dtp_reservation_date.SelectedDate != null & !Cbx_reservation_hours.Text.Equals("Hrs") 
                 & !Cbx_reservation_minute.Text.Equals("Min") & string.IsNullOrEmpty(Tbx_reservation_name.Text) )
             {
                 int et_startTime = Int32.Parse(Cbx_reservation_hours.Text) * 100 + Int32.Parse(Cbx_reservation_minute.Text);
                 int et_endtime = ((Int32.Parse(Cbx_reservation_hours.Text)+1) * 100) + Int32.Parse(Cbx_reservation_minute.Text);
 
-                //Console.WriteLine("Start Time : " + et_startTime);
-                //Console.WriteLine("End Time : " + et_endtime);
-
-                var booked_tables = (from et in reservedTables
+                var booked_tables = (from et in App.reservedTables
                                       where
                                       et.ReservationDate.Date.Equals((DateTime)Dtp_reservation_date.SelectedDate) &&
                                       (( et_endtime > et.StartTime && et_endtime < et.EndTime ) || ( et_startTime > et.StartTime && et_startTime < et.EndTime ))
                                       select et.TableId).ToList();
 
-                //Console.WriteLine("seacrh result count : " + booked_tables.Count());
-                //foreach (var item in booked_tables)
-                //{
-                //    Console.WriteLine(item);
-                //}
-                var empty_tables = tables.Where(i => !booked_tables.Contains(i.TableId) && i.TableCapacity >= Int32.Parse(Cbx_guest_number.Text));
+                var empty_tables = App.tables.Where(i => !booked_tables.Contains(i.TableId) && i.TableCapacity >= Int32.Parse(Cbx_guest_number.Text));
 
                 if (empty_tables.Count()> 0)
                 {
@@ -295,7 +274,7 @@ namespace TableManagement
             if (Cbx_guest_number.Text.Equals(".") & Dtp_reservation_date.SelectedDate != null & Cbx_reservation_hours.Text.Equals("Hrs")
                 & Cbx_reservation_minute.Text.Equals("Min") & !string.IsNullOrEmpty(Tbx_reservation_name.Text))
             {
-                var r_by_name = from r in reservedTables where r.GuestName.Equals(Tbx_reservation_name.Text) && r.ReservationDate.Date.Equals((DateTime)Dtp_reservation_date.SelectedDate) select r;
+                var r_by_name = from r in App.reservedTables where r.GuestName.Equals(Tbx_reservation_name.Text) && r.ReservationDate.Date.Equals((DateTime)Dtp_reservation_date.SelectedDate) select r;
                 if (r_by_name.Count()>0)
                     dg_reservationOverview.ItemsSource = r_by_name;
                 else
@@ -305,7 +284,7 @@ namespace TableManagement
             if (Cbx_guest_number.Text.Equals(".") & Dtp_reservation_date.SelectedDate == null & Cbx_reservation_hours.Text.Equals("Hrs")
                 & Cbx_reservation_minute.Text.Equals("Min") & !string.IsNullOrEmpty(Tbx_reservation_name.Text))
             {
-                var r_by_name = from r in reservedTables where r.GuestName.Equals(Tbx_reservation_name.Text)  select r;
+                var r_by_name = from r in App.reservedTables where r.GuestName.Equals(Tbx_reservation_name.Text)  select r;
                 if (r_by_name.Count() > 0)
                     dg_reservationOverview.ItemsSource = r_by_name;
                 else
