@@ -46,29 +46,53 @@ namespace TableManagement
             var res = from r in App.reservedTables
                       orderby r.TableId
                       where r.ReservationDate.Date.Equals(DateTime.Today.Date) &
-                            r.StartTime < Int32.Parse(DateTime.Now.ToString("HHmm")) &
-                            r.EndTime > Int32.Parse(DateTime.Now.ToString("HHmm"))
+                            r.StartTime < 1800 &
+                            r.EndTime > 1800
                       select new { r.TableId };
 
-            int[] status_array = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+            int[] status_array = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0 };
 
             foreach (var item in res)
             {
                 status_array[item.TableId] = 1;
             }
 
-            for (int i = 1; i <= status_array.Length; i++)
-            {
+            int qwe = 1;
 
-            }
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < 3; i++)
             {
-                for (int j = 0; j < 4; j++)
+                for (int j = 0; j < 3; j++)
                 {
-                    // add at position i,j
+                    AddTable(i, j,qwe, status_array[qwe]);
+                    Console.WriteLine("Add Table :" + qwe.ToString());
+                    Console.WriteLine("i:" + i.ToString() + "j: " + j.ToString());
+                    qwe++;
+                    
                 }
             }
 
+        }
+
+        private void AddTable(int i, int j,int tableNum,int status)
+        {
+            var xPxl = (i+0.9)*80.0;
+            var yPxl = (j+0.7)*80.0;
+
+            var tableRec = new TextBlock
+            {
+                Height = 40,
+                Width = 40,
+                Text = string.Concat("T", tableNum.ToString())
+            };
+
+            if (status == 1)
+                tableRec.Background = Brushes.GreenYellow;
+            else
+                tableRec.Background = Brushes.OrangeRed;
+
+            tableRec.SetValue(Canvas.TopProperty, xPxl);
+            tableRec.SetValue(Canvas.LeftProperty, yPxl);
+            Cvs_gui.Children.Add(tableRec);
 
         }
 
