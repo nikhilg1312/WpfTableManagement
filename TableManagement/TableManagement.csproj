@@ -66,6 +66,9 @@
     </ApplicationDefinition>
     <Compile Include="BindingSource.cs" />
     <Compile Include="DayTableSchedule.cs" />
+    <Compile Include="EditReservation.xaml.cs">
+      <DependentUpon>EditReservation.xaml</DependentUpon>
+    </Compile>
     <Compile Include="makeNewReservation.xaml.cs">
       <DependentUpon>makeNewReservation.xaml</DependentUpon>
     </Compile>
@@ -74,6 +77,10 @@
     <Compile Include="Table.cs" />
     <Compile Include="TimeSlot.cs" />
     <Compile Include="TimeSlotTry2.cs" />
+    <Page Include="EditReservation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

@@ -25,9 +25,7 @@ namespace TableManagement
     {
         private ReservationDetails ipRDetails;
         private IEnumerable<Table> emptyTables;
-        App current = App.Current as App;
-
-
+        
         public makeNewReservation(ReservationDetails _newReservation, IEnumerable<Table> _empty_tables)
         {
             InitializeComponent();
@@ -53,25 +51,21 @@ namespace TableManagement
         private void Btn_Reserve_Click(object sender, RoutedEventArgs e)
         {
             var selectedTableID = getDataGridValueAt(Dg_emptyTables, 0);
-            
-
             if (!string.IsNullOrEmpty(TxtBx_rName.Text) &  selectedTableID!= 0)
             {
-                string[] times = TxtBlk_Time.Text.Split(':');
-                
 
-                ReservationDetails newReservation = new ReservationDetails
+                ipRDetails.ReservationId = App.reservedTables.Max(x => x.ReservationId);
+                ipRDetails.GuestName = TxtBx_rName.Text;
+                ipRDetails.TableId = selectedTableID;
+
+                //Console.WriteLine("IPdetails : " + ipRDetails.ReservationId + " |" + ipRDetails.TableId + " |" + ipRDetails.GuestName + " |" + ipRDetails.ReservationDate + " |" +ipRDetails.StartTime + " |" +ipRDetails.EndTime);
+
+                if (MessageBox.Show("Are you sure with Reservation Details?","Warning",MessageBoxButton.YesNo,MessageBoxImage.Warning) == MessageBoxResult.Yes)
                 {
-                    ReservationId = App.reservedTables.Max(x => x.ReservationId),
-                    NumberOfGuest = Int32.Parse(TxtBlk_NoOfGuest.Text),
-                    ReservationDate = DateTime.Parse(TxtBlk_rDate.Text),
-                    StartTime = (Int32.Parse(times[0]) * 100) + Int32.Parse(times[1]),
-                    EndTime = ((Int32.Parse(times[0]) + 1) * 100) + Int32.Parse(times[1]),
-                    TableId = selectedTableID,
-                    GuestName = TxtBx_rName.Text
-                };
-                //App.reservedTables.Add(newReservation);
-
+                    App.reservedTables.Add(ipRDetails);
+                    this.Close();
+                    // todo reload Canvas
+                }
             }
             if (!string.IsNullOrEmpty(TxtBx_rName.Text) & selectedTableID == 0)
             {
@@ -96,6 +90,11 @@ namespace TableManagement
             str = str.Split(',')[columnIndex].Trim();
             str = str.Split('=')[1].Trim();
             return Int32.Parse(str);
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            ((MainWindow)this.Owner).TryTimeSlot(DateTime.Now);
         }
     }
 }

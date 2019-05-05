@@ -69,18 +69,18 @@ namespace TableManagement
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            
             //reservedTables = MyStorage.ReadXML<ObservableCollection<ReservationDetails>>("reservedTables.xml");
             // = MyStorage.ReadXML<ObservableCollection<Table>>("tables.xml");
             //ObservableCollection<ReservationDetails>  reservedTables2 = GenerateReservations();
             //reservedTables = new ObservableCollection<ReservationDetails>(reservedTables1.Union(reservedTables2).ToList());
             //GetTableSchedule(reservedTables,DateTime.Today);
             timer_upcomings_15.Start();
-
             TryTimeSlot(DateTime.Today);
 
         }
 
-        private void TryTimeSlot(DateTime ipDate)
+        public void TryTimeSlot(DateTime ipDate)
         {
             Cvs_slot_1.Children.Clear();
             DrawVLines(Cvs_slot_1);
@@ -262,6 +262,7 @@ namespace TableManagement
                     };
 
                     var newReservationWindow = new makeNewReservation(newReservation, empty_tables);
+                    newReservationWindow.Owner = this;
                     newReservationWindow.Show();
                 }
                 else
@@ -274,9 +275,12 @@ namespace TableManagement
             if (Cbx_guest_number.Text.Equals(".") & Dtp_reservation_date.SelectedDate != null & Cbx_reservation_hours.Text.Equals("Hrs")
                 & Cbx_reservation_minute.Text.Equals("Min") & !string.IsNullOrEmpty(Tbx_reservation_name.Text))
             {
-                var r_by_name = from r in App.reservedTables where r.GuestName.Equals(Tbx_reservation_name.Text) && r.ReservationDate.Date.Equals((DateTime)Dtp_reservation_date.SelectedDate) select r;
-                if (r_by_name.Count()>0)
-                    dg_reservationOverview.ItemsSource = r_by_name;
+                var r_by_name_n_Date = (from r in App.reservedTables where r.GuestName.Equals(Tbx_reservation_name.Text) && r.ReservationDate.Date.Equals((DateTime)Dtp_reservation_date.SelectedDate) select r).FirstOrDefault();
+                if (r_by_name_n_Date!=null)
+                {
+                    var editReservation = new EditReservation(r_by_name_n_Date);
+                    editReservation.Show();
+                }
                 else
                     MessageBox.Show("No Reservation by Name " + Tbx_reservation_name.Text, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
@@ -284,9 +288,12 @@ namespace TableManagement
             if (Cbx_guest_number.Text.Equals(".") & Dtp_reservation_date.SelectedDate == null & Cbx_reservation_hours.Text.Equals("Hrs")
                 & Cbx_reservation_minute.Text.Equals("Min") & !string.IsNullOrEmpty(Tbx_reservation_name.Text))
             {
-                var r_by_name = from r in App.reservedTables where r.GuestName.Equals(Tbx_reservation_name.Text)  select r;
-                if (r_by_name.Count() > 0)
-                    dg_reservationOverview.ItemsSource = r_by_name;
+                var r_by_name = (from r in App.reservedTables where r.GuestName.Equals(Tbx_reservation_name.Text)  select r).FirstOrDefault();
+                if (r_by_name != null)
+                {
+                    var editReservation = new EditReservation(r_by_name);
+                    editReservation.Show();
+                }
                 else
                     MessageBox.Show("No Reservation by Name " + Tbx_reservation_name.Text, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
