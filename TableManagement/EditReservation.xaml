@@ -3,18 +3,19 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        Loaded="Window_Loaded"
         xmlns:local="clr-namespace:TableManagement"
         mc:Ignorable="d"
-        Title="Reservation Details " Height="450" Width="270">
+        Title="Reservation Details " Height="493.569" Width="270">
     <Grid >
         <StackPanel>
             <StackPanel Height="30">
                 <TextBlock Text="Edit Reservation" FontSize="18" Margin="10,0,0.2,0" Height="37"/>
             </StackPanel>
-            <StackPanel HorizontalAlignment="Left" Height="374"  VerticalAlignment="Top" Width="243" Margin="10,10,0,0">
+            <StackPanel HorizontalAlignment="Left" Height="402"  VerticalAlignment="Top" Width="243" Margin="10,10,0,0">
                 <StackPanel Orientation="Horizontal" Margin="0,0,2,4">
                     <TextBlock Text="Number of Guest "/>
-                    <ComboBox Name="Cbx_guest_number" Margin="25,0,-0.2,0" RenderTransformOrigin="0.494,2.096">
+                    <ComboBox Name="Cbx_guest_number" Margin="25,0,-0.2,0" RenderTransformOrigin="0.494,2.096" SelectionChanged="Cbx_guest_number_SelectionChanged">
                         <ComboBoxItem Content="." IsSelected="True" />
                         <ComboBoxItem Content="2"/>
                         <ComboBoxItem Content="3"/>
@@ -25,11 +26,11 @@
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="0,0,2,4">
                     <TextBlock Text="Reservation Date"/>
-                    <DatePicker x:Name="Dtp_reservation_date"  Margin="27,0,-0.2,0" RenderTransformOrigin="0.494,2.096"  SelectedDateFormat="Short"/>
+                    <DatePicker x:Name="Dtp_reservation_date"  Margin="27,0,-0.2,0" RenderTransformOrigin="0.494,2.096"  SelectedDateFormat="Short" SelectedDateChanged="Dtp_reservation_date_SelectedDateChanged"  />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="0,0,2,4" >
                     <TextBlock Text="Reservation Time "/>
-                    <ComboBox Name="Cbx_reservation_hours"  Margin="24,0,-0.2,0" RenderTransformOrigin="0.494,2.096">
+                    <ComboBox Name="Cbx_reservation_hours"  Margin="24,0,-0.2,0" RenderTransformOrigin="0.494,2.096" SelectionChanged="Cbx_reservation_hours_SelectionChanged">
                         <ComboBoxItem Content="Hrs" IsSelected="True"/>
                         <ComboBoxItem Content="17"/>
                         <ComboBoxItem Content="18"/>
@@ -39,7 +40,7 @@
                         <ComboBoxItem Content="22"/>
                     </ComboBox>
                     <TextBlock Text=":" Margin="10,0,0,0"/>
-                    <ComboBox Name="Cbx_reservation_minute" Margin="10,0,-0.2,0" RenderTransformOrigin="0.494,2.096">
+                    <ComboBox Name="Cbx_reservation_minute" Margin="10,0,-0.2,0" RenderTransformOrigin="0.494,2.096" SelectionChanged="Cbx_reservation_minute_SelectionChanged" >
                         <ComboBoxItem Content="Min" IsSelected="True"/>
                         <ComboBoxItem Content="00"/>
                         <ComboBoxItem Content="15"/>
@@ -49,9 +50,10 @@
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="0,0,2,8">
                     <TextBlock Text="Reservation Name"/>
-                    <TextBox Name ="TxtBx_rName" Width="88" Margin="22,0,0,0"/>
+                    <TextBox Name ="TxtBx_rName" Width="88" Margin="22,0,0,0" TextChanged="TxtBx_rName_TextChanged" />
                 </StackPanel>
-                <DataGrid Name ="Dg_emptyTables" Height="202" Margin="0,0,2.2,4"  />
+                <Button Name="Btn_Load" Content="Load"  Width="70" Margin="0,5,0,5" Click="Btn_Load_Click" />
+                <DataGrid Name ="Dg_emptyTables" Height="150" Margin="0,0,2.2,4"  />
                 <Button Name="Btn_Reserve" Content="Reserve"  Width="70" Margin="0,20,0,0" Click="Btn_Reserve_Click" />
             </StackPanel>
         </StackPanel>

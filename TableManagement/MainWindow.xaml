@@ -80,7 +80,7 @@
         <TextBlock Grid.Column="2" HorizontalAlignment="Left" Height="32" Margin="108.8,28.2,0,0" Grid.Row="1" TextWrapping="Wrap" Text="Overview" VerticalAlignment="Top" Width="120" FontSize="24" TextAlignment="Center"/>
 
 
-        <DataGrid x:Name="dg_reservationOverview" Grid.Column="2" HorizontalAlignment="Left" Height="452" Margin="9.8,100.2,0,0" Grid.Row="1" VerticalAlignment="Top" Width="303"/>
+        <DataGrid x:Name="dg_reservationOverview" Grid.Column="2" HorizontalAlignment="Left" Height="119" Margin="9.8,433.2,0,0" Grid.Row="1" VerticalAlignment="Top" Width="303"/>
         <DatePicker x:Name ="Dp_DatePicker"  Grid.Column="1" HorizontalAlignment="Left" Margin="37.4,99.8,0,0" Grid.Row="1" VerticalAlignment="Top" Width="720" SelectedDateChanged="Dp_DatePicker_SelectedDateChanged" Height="24"  />
 
 
@@ -113,6 +113,7 @@
             </StackPanel>
 
         </StackPanel>
+        <Canvas Name="Cvs_gui" Grid.Column="2" HorizontalAlignment="Left" Height="363" Margin="9.8,65.2,0,0" Grid.Row="1" VerticalAlignment="Top" Width="303" Background="LightGray"/>
 
 
 

@@ -50,7 +50,7 @@ namespace TableManagement
 
         private void Btn_Reserve_Click(object sender, RoutedEventArgs e)
         {
-            var selectedTableID = getDataGridValueAt(Dg_emptyTables, 0);
+            var selectedTableID = App.getDataGridValueAt(Dg_emptyTables, 0);
             if (!string.IsNullOrEmpty(TxtBx_rName.Text) &  selectedTableID!= 0)
             {
 
@@ -64,7 +64,7 @@ namespace TableManagement
                 {
                     App.reservedTables.Add(ipRDetails);
                     this.Close();
-                    // todo reload Canvas
+                    closingEtiquets(ipRDetails.ReservationDate);
                 }
             }
             if (!string.IsNullOrEmpty(TxtBx_rName.Text) & selectedTableID == 0)
@@ -79,22 +79,15 @@ namespace TableManagement
 
         }
 
-        public static int getDataGridValueAt(DataGrid dGrid, int columnIndex)
+        private void closingEtiquets(DateTime rDate)
         {
-            if (dGrid.SelectedItem == null)
-                return 0;
-            string str = dGrid.SelectedItem.ToString(); // Take the selected line
-            str = str.Replace("}", "").Trim().Replace("{", "").Trim(); // Delete useless characters
-            if (columnIndex < 0 || columnIndex >= str.Split(',').Length) // case where the index can't be used 
-                return 0;
-            str = str.Split(',')[columnIndex].Trim();
-            str = str.Split('=')[1].Trim();
-            return Int32.Parse(str);
-        }
-
-        private void Window_Closed(object sender, EventArgs e)
-        {
-            ((MainWindow)this.Owner).TryTimeSlot(DateTime.Now);
+            ((MainWindow)this.Owner).TryTimeSlot(rDate);
+            ((MainWindow)this.Owner).Dp_DatePicker.SelectedDate = rDate.Date;
+            ((MainWindow)this.Owner).Dtp_reservation_date.SelectedDate = null;
+            ((MainWindow)this.Owner).SelectByValueMain(((MainWindow)this.Owner).Cbx_guest_number, ".");
+            ((MainWindow)this.Owner).SelectByValueMain(((MainWindow)this.Owner).Cbx_reservation_hours, "Hrs");
+            ((MainWindow)this.Owner).SelectByValueMain(((MainWindow)this.Owner).Cbx_reservation_minute, "Min");
+            ((MainWindow)this.Owner).Tbx_reservation_name.Text = null;
         }
     }
 }
