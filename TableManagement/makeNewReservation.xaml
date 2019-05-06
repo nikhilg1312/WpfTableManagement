@@ -16,19 +16,19 @@
             <StackPanel HorizontalAlignment="Left" Height="349"  VerticalAlignment="Top" Width="243" Margin="10,10,0,0">
                 <StackPanel Orientation="Horizontal" Margin="0,0,2,4">
                     <TextBlock Text="Number of Guest "/>
-                    <TextBlock x:Name ="TxtBlk_NoOfGuest" Margin="33,0,0,0" />
+                    <TextBlock x:Name ="TxtBlk_NoOfGuest" Margin="30,0,0,0" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="0,0,2,4">
                     <TextBlock Text="Reservation Date"/>
-                    <TextBlock Name="TxtBlk_rDate" Text="" Margin="70,0,0,0"  />
+                    <TextBlock Name="TxtBlk_rDate" Text="" Margin="35,0,0,0"  />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="0,0,2,4" >
                     <TextBlock Text="Reservation Time "/>
-                    <TextBlock Name="TxtBlk_Time" Text="" Margin="70,0,0,0" />
+                    <TextBlock Name="TxtBlk_Time" Text="" Margin="32,0,0,0" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="0,0,2,8">
                     <TextBlock Text="Reservation Name"/>
-                    <TextBox Name ="TxtBx_rName" Width="88"/>
+                    <TextBox Name ="TxtBx_rName" Width="88" Margin="28,0,0,0" />
                 </StackPanel>
                 <DataGrid Name ="Dg_emptyTables" Height="210" Margin="0,0,2.2,2"  />
                 <Button Name="Btn_Reserve" Content="Reserve"  Width="70" Margin="0,20,0,0" Click="Btn_Reserve_Click" />

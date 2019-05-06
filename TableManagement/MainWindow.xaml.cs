@@ -22,8 +22,6 @@ namespace TableManagement
     /// </summary>
     public partial class MainWindow : Window
     {
-        //public ObservableCollection<ReservationDetails> reservedTables;
-        //public ObservableCollection<Table> tables;
         DispatcherTimer timer_upcomings_15;
 
         public MainWindow()
@@ -64,8 +62,6 @@ namespace TableManagement
                 for (int j = 0; j < 3; j++)
                 {
                     AddTable(i, j,qwe, status_array[qwe]);
-                    Console.WriteLine("Add Table :" + qwe.ToString());
-                    Console.WriteLine("i:" + i.ToString() + "j: " + j.ToString());
                     qwe++;
                     
                 }
@@ -86,9 +82,9 @@ namespace TableManagement
             };
 
             if (status == 1)
-                tableRec.Background = Brushes.GreenYellow;
+                tableRec.Background = Brushes.Orange;
             else
-                tableRec.Background = Brushes.OrangeRed;
+                tableRec.Background = Brushes.GreenYellow;
 
             tableRec.SetValue(Canvas.TopProperty, xPxl);
             tableRec.SetValue(Canvas.LeftProperty, yPxl);
@@ -96,44 +92,12 @@ namespace TableManagement
 
         }
 
-        //private ObservableCollection<ReservationDetails> GenerateReservations()
-        //{
-        //    var lst = new ObservableCollection<ReservationDetails>();
-        //    for (int i = 0; i < 8; i++)
-        //    {
-        //        var sh = GetRandomHrs();
-        //        var sm = GetRandomMin();
-        //        lst.Add(new ReservationDetails { ReservationId = i, TableId = i ,  GuestName = "name" + i.ToString() , NumberOfGuest = 3,
-        //                                         ReservationDate = DateTime.Today , StartHrs = sh , StartMin = sm });
-        //    }
-        //    return lst;
-        //}
-
-        //private int GetRandomHrs()
-        //{
-        //    int[] AllowedValues = new int[] { 17,18,19,20,21,22 };
-        //    Random rand = new Random();
-        //    return AllowedValues[rand.Next(AllowedValues.Length)];
-        //}
-
-        //private int GetRandomMin()
-        //{
-        //    int[] AllowedValues = new int[] { 00,15,30,45 };
-        //    Random rand = new Random();
-        //    return AllowedValues[rand.Next(AllowedValues.Length)];
-        //}       
+    
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            
-            //reservedTables = MyStorage.ReadXML<ObservableCollection<ReservationDetails>>("reservedTables.xml");
-            // = MyStorage.ReadXML<ObservableCollection<Table>>("tables.xml");
-            //ObservableCollection<ReservationDetails>  reservedTables2 = GenerateReservations();
-            //reservedTables = new ObservableCollection<ReservationDetails>(reservedTables1.Union(reservedTables2).ToList());
-            //GetTableSchedule(reservedTables,DateTime.Today);
             timer_upcomings_15.Start();
             TryTimeSlot(DateTime.Today);
-
         }
 
         public void TryTimeSlot(DateTime ipDate)
@@ -144,12 +108,14 @@ namespace TableManagement
 
             var lst = from r in App.reservedTables orderby r.TableId where r.ReservationDate.Date.Equals(ipDate.Date) select r;
             int[] tNum_all = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0 , 0 };
-            //nice
+
             foreach (var item in lst)
             {
                 int tNum = tNum_all[item.TableId];
                 
                 Rectangle bar = new Rectangle();
+                bar.Tag = item.ReservationId;
+                bar.MouseUp += Bar_MouseUp;
 
                 var start_pxl = GetPxl(item.StartTime);
                 var end_pxl = GetPxl(item.EndTime);
@@ -186,11 +152,27 @@ namespace TableManagement
                         break;
                 }
 
-                bar.ToolTip = item.GuestName;
+                bar.ToolTip = item.ReservationId;
 
                 Cvs_slot_1.Children.Add(bar);    
             }
 
+
+        }
+
+        private void Bar_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            var resID = (sender as Rectangle).Tag.ToString();
+
+            var r_by_name = (from r in App.reservedTables where r.ReservationId.Equals(Int32.Parse(resID)) select r).FirstOrDefault();
+            if (r_by_name != null)
+            {
+                var editReservation = new EditReservation(r_by_name)
+                {
+                    Owner = this
+                };
+                editReservation.Show();
+            }
 
         }
 
@@ -313,42 +295,45 @@ namespace TableManagement
             else
             {
                 if (!Cbx_guest_number.Text.Equals(".") & Dtp_reservation_date.SelectedDate != null & !Cbx_reservation_hours.Text.Equals("Hrs")
-                & !Cbx_reservation_minute.Text.Equals("Min") & string.IsNullOrEmpty(Tbx_reservation_name.Text)
-                & !App.isDateTimeIsPast((DateTime)Dtp_reservation_date.SelectedDate))
+                & !Cbx_reservation_minute.Text.Equals("Min") & string.IsNullOrEmpty(Tbx_reservation_name.Text) )
                 {
 
-                    int et_startTime = Int32.Parse(Cbx_reservation_hours.Text) * 100 + Int32.Parse(Cbx_reservation_minute.Text);
-                    int et_endtime = ((Int32.Parse(Cbx_reservation_hours.Text) + 1) * 100) + Int32.Parse(Cbx_reservation_minute.Text);
-
-                    var booked_tables = (from et in App.reservedTables
-                                         where
-                                         et.ReservationDate.Date.Equals((DateTime)Dtp_reservation_date.SelectedDate) &&
-                                         ((et_endtime > et.StartTime && et_endtime < et.EndTime) || (et_startTime > et.StartTime && et_startTime < et.EndTime))
-                                         select et.TableId).ToList();
-
-                    var empty_tables = App.tables.Where(i => !booked_tables.Contains(i.TableId) && i.TableCapacity >= Int32.Parse(Cbx_guest_number.Text));
-
-                    if (empty_tables.Count() > 0)
+                    if (!App.isDateTimeIsPast(ipDate: (DateTime)Dtp_reservation_date.SelectedDate, time: (int.Parse(Cbx_reservation_hours.Text) * 100) + int.Parse(Cbx_reservation_minute.Text)))
                     {
 
-                        ReservationDetails newReservation = new ReservationDetails
-                        {
-                            NumberOfGuest = Int32.Parse(Cbx_guest_number.Text),
-                            ReservationDate = (DateTime)Dtp_reservation_date.SelectedDate,
-                            StartTime = Int32.Parse(Cbx_reservation_hours.Text) * 100 + Int32.Parse(Cbx_reservation_minute.Text),
-                            EndTime = ((Int32.Parse(Cbx_reservation_hours.Text) + 1) * 100) + Int32.Parse(Cbx_reservation_minute.Text),
+                        int et_startTime = Int32.Parse(Cbx_reservation_hours.Text) * 100 + Int32.Parse(Cbx_reservation_minute.Text);
+                        int et_endtime = ((Int32.Parse(Cbx_reservation_hours.Text) + 1) * 100) + Int32.Parse(Cbx_reservation_minute.Text);
 
-                        };
+                        var booked_tables = (from et in App.reservedTables
+                                             where
+                                             et.ReservationDate.Date.Equals((DateTime)Dtp_reservation_date.SelectedDate) &&
+                                             ((et_endtime > et.StartTime && et_endtime < et.EndTime) || (et_startTime > et.StartTime && et_startTime < et.EndTime))
+                                             select et.TableId).ToList();
 
-                        var newReservationWindow = new makeNewReservation(newReservation, empty_tables)
+                        var empty_tables = App.tables.Where(i => !booked_tables.Contains(i.TableId) && i.TableCapacity >= Int32.Parse(Cbx_guest_number.Text));
+
+                        if (empty_tables.Count() > 0)
                         {
-                            Owner = this
-                        };
-                        newReservationWindow.Show();
-                    }
-                    else
-                    {
-                        MessageBox.Show("No Tables Availiable", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                            ReservationDetails newReservation = new ReservationDetails
+                            {
+                                NumberOfGuest = Int32.Parse(Cbx_guest_number.Text),
+                                ReservationDate = (DateTime)Dtp_reservation_date.SelectedDate,
+                                StartTime = Int32.Parse(Cbx_reservation_hours.Text) * 100 + Int32.Parse(Cbx_reservation_minute.Text),
+                                EndTime = ((Int32.Parse(Cbx_reservation_hours.Text) + 1) * 100) + Int32.Parse(Cbx_reservation_minute.Text),
+
+                            };
+
+                            var newReservationWindow = new makeNewReservation(newReservation, empty_tables)
+                            {
+                                Owner = this
+                            };
+                            newReservationWindow.Show();
+                        }
+                        else
+                        {
+                            MessageBox.Show("No Tables Availiable", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
                     }
 
                 }
@@ -369,17 +354,6 @@ namespace TableManagement
                         MessageBox.Show("No Reservation by Name " + Tbx_reservation_name.Text, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
-
-
-
-
-
-
-
-
-
-
-
 
         }
 

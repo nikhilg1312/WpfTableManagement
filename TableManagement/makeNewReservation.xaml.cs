@@ -54,7 +54,7 @@ namespace TableManagement
             if (!string.IsNullOrEmpty(TxtBx_rName.Text) &  selectedTableID!= 0)
             {
 
-                ipRDetails.ReservationId = App.reservedTables.Max(x => x.ReservationId);
+                ipRDetails.ReservationId = App.reservedTables.Max(x => x.ReservationId) +1 ;
                 ipRDetails.GuestName = TxtBx_rName.Text;
                 ipRDetails.TableId = selectedTableID;
 
