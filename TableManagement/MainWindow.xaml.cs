@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Syncfusion.Windows.GridCommon;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
@@ -44,8 +38,8 @@ namespace TableManagement
             var res = from r in App.reservedTables
                       orderby r.TableId
                       where r.ReservationDate.Date.Equals(DateTime.Today.Date) &
-                            r.StartTime < 1800 &
-                            r.EndTime > 1800
+                            r.StartTime < Int32.Parse(DateTime.Now.ToString("HHmm")) &
+                            r.EndTime > Int32.Parse(DateTime.Now.ToString("HHmm"))
                       select new { r.TableId };
 
             int[] status_array = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0 };
@@ -72,7 +66,7 @@ namespace TableManagement
         private void AddTable(int i, int j,int tableNum,int status)
         {
             var xPxl = (i+0.9)*80.0;
-            var yPxl = (j+0.7)*80.0;
+            var yPxl = (j+0.7)*80;
 
             var tableRec = new TextBlock
             {
@@ -113,7 +107,7 @@ namespace TableManagement
             {
                 int tNum = tNum_all[item.TableId];
                 
-                Rectangle bar = new Rectangle();
+                var bar = new TextBlock();
                 bar.Tag = item.ReservationId;
                 bar.MouseUp += Bar_MouseUp;
 
@@ -130,29 +124,32 @@ namespace TableManagement
 
                 switch (tNum)
                 {
-                    case 0:
-                        bar.Fill = Brushes.Gray;
+                    case 0://dfcce8
+                        bar.Background = new BrushConverter().ConvertFromString("#dfcce8") as SolidColorBrush; ;
                         tNum_all[item.TableId]++;
                         break;
                     case 1:
-                        bar.Fill = Brushes.Green;
+                        bar.Background = new BrushConverter().ConvertFromString("#a4bed7") as SolidColorBrush; ;
                         tNum_all[item.TableId]++;
                         break;
                     case 2:
-                        bar.Fill = Brushes.LawnGreen;
+                        bar.Background = new BrushConverter().ConvertFromString("#c2d5b4") as SolidColorBrush; ;
                         tNum_all[item.TableId]++;
                         break;
                     case 4:
-                        bar.Fill = Brushes.LightCyan;
+                        bar.Background = new BrushConverter().ConvertFromString("#cfc4a0") as SolidColorBrush; ;
                         tNum_all[item.TableId]++;
                         break;
                     case 5:
-                        bar.Fill = Brushes.LightSeaGreen;
+                        bar.Background = new BrushConverter().ConvertFromString("#c2c6c7") as SolidColorBrush; ;
                         tNum_all[item.TableId]++;
                         break;
                 }
 
-                bar.ToolTip = item.ReservationId;
+                bar.Text = item.GuestName;
+                bar.TextAlignment = TextAlignment.Center;
+                bar.VerticalAlignment = VerticalAlignment.Center;
+                bar.HorizontalAlignment = HorizontalAlignment.Center;
 
                 Cvs_slot_1.Children.Add(bar);    
             }
@@ -160,9 +157,10 @@ namespace TableManagement
 
         }
 
+
         private void Bar_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            var resID = (sender as Rectangle).Tag.ToString();
+            var resID = (sender as TextBlock).Tag.ToString();
 
             var r_by_name = (from r in App.reservedTables where r.ReservationId.Equals(Int32.Parse(resID)) select r).FirstOrDefault();
             if (r_by_name != null)
@@ -181,7 +179,7 @@ namespace TableManagement
             for (int i = 0; i < cvs.Height; i = i + (int)(cvs.Height/9) )
             {
                 Line line = new Line();
-                line.Stroke = Brushes.GreenYellow;
+                line.Stroke = Brushes.DarkBlue;
 
                 line.X1 = 0;
                 line.Y1 = i;
@@ -195,10 +193,14 @@ namespace TableManagement
 
         private void DrawVLines(Canvas cvs)
         {
-            for (int i = 0; i < cvs.Width ; i = i + (int)(cvs.Width/6))
+            for (int i = 0; i < cvs.Width ; i = i + (int)(cvs.Width/24))
             {
                 Line line = new Line();
-                line.Stroke = Brushes.LightSteelBlue;
+
+                if (i % (cvs.Width / 6) == 0)
+                    line.Stroke = Brushes.DarkBlue;
+                else
+                    line.Stroke = Brushes.LightBlue;
 
                 line.X1 = i;
                 line.Y1 = 0;
@@ -232,7 +234,11 @@ namespace TableManagement
                            where
                            r.ReservationDate.Date == DateTime.Today.Date &&
                            r.EndTime > Int32.Parse(DateTime.Now.ToString("HHmm"))
-                           select new { r.GuestName, r.TableId, r.EndTime }).ToList().Take(3);
+                           select new {
+                                        Name = r.GuestName ,
+                                        Table_Number = r.TableId,
+                                        Time = string.Concat(r.EndTime.ToString().Substring(0, 2),":", r.EndTime.ToString().Substring(2, 2))
+                                      }).ToList().Take(3);
 
 
             Dg_upcoming_Free_Tables.ItemsSource = upg_lst;
@@ -245,7 +251,11 @@ namespace TableManagement
                            where
                            r.ReservationDate.Date == DateTime.Today.Date &&
                            r.StartTime > Int32.Parse(DateTime.Now.ToString("HHmm"))
-                           select new { r.GuestName, r.TableId, r.StartTime }).ToList().Take(3);
+                           select new {
+                                       Name = r.GuestName,
+                                       Table_Number = r.TableId,
+                                       Time = string.Concat(r.StartTime.ToString().Substring(0, 2), ":", r.StartTime.ToString().Substring(2, 2))
+                           }).ToList().Take(3);
 
             Dg_upcoming_Guest.ItemsSource = upg_lst;
                                                 

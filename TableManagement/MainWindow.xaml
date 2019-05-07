@@ -11,22 +11,22 @@
         Closed="Window_Closed"
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"
-        Title="Table Management" Height="680" Width="1500">
-    <Grid >
+        Title="Table Management" Height="680" Width="1500" Icon="logo.png">
+    <Grid Background="#FFF4F3D9" >
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="346*"/>
             <ColumnDefinition Width="805*"/>
             <ColumnDefinition Width="342*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="10*"/>
-            <RowDefinition Height="90*"/>
+            <RowDefinition Height="67*"/>
+            <RowDefinition Height="583*"/>
         </Grid.RowDefinitions>
-        <TextBox HorizontalAlignment="Left" Height="77" Margin="144.4,0,0,0" TextWrapping="Wrap" Text="Hotel Chester&#xA;&#xA;" VerticalAlignment="Top" Width="539" FontSize="72" FontFamily="Lucida Calligraphy" Background="White" Foreground="#FF2058D9" Grid.RowSpan="2" BorderBrush="White" Grid.Column="1"/>
-        <StackPanel HorizontalAlignment="Left" Height="196" Margin="24,32.8,0,0" Grid.Row="1" VerticalAlignment="Top" Width="297" OpacityMask="{DynamicResource {x:Static SystemColors.ActiveCaptionBrushKey}}" Background="{DynamicResource {x:Static SystemColors.GradientInactiveCaptionBrushKey}}">
-            <TextBlock TextWrapping="Wrap" Margin="0,0,-0.2,0" FontSize="16" TextAlignment="Center"><Run FontSize="20" Text="Reservation"/></TextBlock>
+        <TextBlock HorizontalAlignment="Left" Height="57" Margin="69,10,0,0" TextWrapping="Wrap" Text="Hotel Chester" VerticalAlignment="Top" Width="356" FontSize="36" FontFamily="Lucida Calligraphy" Background="#FFF4F3D9" Foreground="#FFA22159" Grid.ColumnSpan="2"/>
+        <StackPanel HorizontalAlignment="Left" Height="196" Margin="24,30.8,0,0" Grid.Row="1" VerticalAlignment="Top" Width="297" OpacityMask="{DynamicResource {x:Static SystemColors.ActiveCaptionBrushKey}}" Background="#FFD4D3B4">
+            <TextBlock TextWrapping="Wrap" Margin="0,0,-0.2,0" FontSize="16" TextAlignment="Center" Foreground="#FF5C523B"><Run Foreground="#FF483C21" FontSize="20" Text="Reservation"/></TextBlock>
             <StackPanel Orientation="Horizontal" Margin="0,10">
-                <TextBlock Text="Number of Guest" Margin="25,0,0,0"/>
+                <TextBlock Text="Number of Guest" Margin="25,0,0,0" Foreground="#FF5C523B"/>
                 <ComboBox Name="Cbx_guest_number" Margin="25,0,-0.2,0" RenderTransformOrigin="0.494,2.096">
                     <ComboBoxItem Content="." IsSelected="True" />
                     <ComboBoxItem Content="2"/>
@@ -37,11 +37,11 @@
                 </ComboBox>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                <TextBlock Text="Reservation Date" Margin="25,0,0,0"/>
+                <TextBlock Margin="25,0,0,0"><Run Foreground="#FF483C21" Text="Reservation Date"/></TextBlock>
                 <DatePicker x:Name="Dtp_reservation_date"  Margin="27,0,-0.2,0" RenderTransformOrigin="0.494,2.096"  SelectedDateFormat="Short"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Reservation Time" Margin="25,0,0,0"/>
+                <TextBlock Margin="25,0,0,0"><Run Foreground="#FF483C21" Text="Reservation "/><Run Text="Time"/></TextBlock>
                 <ComboBox Name="Cbx_reservation_hours"  Margin="26,0,-0.2,0" RenderTransformOrigin="0.494,2.096">
                     <ComboBoxItem Content="Hrs" IsSelected="True"/>
                     <ComboBoxItem Content="17"/>
@@ -67,27 +67,27 @@
             <Button Name="Btn_Search" Content="Search" Width="50" Height="24" FontSize="14" Margin="0,5,0,0" Click="Btn_Search_Click" />
 
         </StackPanel>
-        <StackPanel HorizontalAlignment="Left" Height="142" Margin="24,246.8,0,0" Grid.Row="1" VerticalAlignment="Top" Width="297" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
-            <TextBlock TextWrapping="Wrap" Text="Upcoming Free tables" FontSize="20" TextAlignment="Center" Margin="0,2,0.8,3" Height="30"/>
-            <DataGrid x:Name="Dg_upcoming_Free_Tables" FontSize="14" Height="97" Margin="33,0,50.8,0" />
+        <StackPanel HorizontalAlignment="Left" Height="142" Margin="24,244.8,0,0" Grid.Row="1" VerticalAlignment="Top" Width="297" Background="#FFD4D3B4">
+            <TextBlock TextWrapping="Wrap" FontSize="20" TextAlignment="Center" Margin="0,2,0.8,3" Height="30" Foreground="#FF483C21"><Run Text="Upcoming "/><Run Text="Free "/><Run Text="tables"/></TextBlock>
+            <DataGrid x:Name="Dg_upcoming_Free_Tables" FontSize="14" Height="97" Margin="32,0,42.8,0" Width="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
         </StackPanel>
-        <StackPanel HorizontalAlignment="Left" Height="146" Margin="24,405.8,0,0" Grid.Row="1" VerticalAlignment="Top" Width="297" Background="{DynamicResource {x:Static SystemColors.GradientInactiveCaptionBrushKey}}">
-            <TextBlock TextWrapping="Wrap" Text="Upcoming Guest" FontSize="20" TextAlignment="Center" Margin="0,2,0,10" />
-            <DataGrid Name="Dg_upcoming_Guest" FontSize="14" Height="95" Margin="34,0,43.8,0" />
+        <StackPanel HorizontalAlignment="Left" Height="151" Margin="24,403.8,0,0" Grid.Row="1" VerticalAlignment="Top" Width="297" Background="#FFD4D3B4">
+            <TextBlock TextWrapping="Wrap" FontSize="20" TextAlignment="Center" Margin="0,2,0,10" Foreground="#FF483C21" ><Run Text="Upcoming "/><Run Text="Guest"/></TextBlock>
+            <DataGrid Name="Dg_upcoming_Guest" FontSize="14" Height="99" Margin="33,0,42.8,0" Width="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
 
         </StackPanel>
-        <TextBlock Grid.Column="1" HorizontalAlignment="Left" Height="32" Margin="207.4,28.2,0,0" Grid.Row="1" TextWrapping="Wrap" Text="Time View" VerticalAlignment="Top" Width="398" FontSize="24" TextAlignment="Center" />
-        <TextBlock Grid.Column="2" HorizontalAlignment="Left" Height="32" Margin="108.8,28.2,0,0" Grid.Row="1" TextWrapping="Wrap" Text="Overview" VerticalAlignment="Top" Width="120" FontSize="24" TextAlignment="Center"/>
+        <TextBlock Grid.Column="1" HorizontalAlignment="Left" Height="32" Margin="207.4,25.8,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="398" FontSize="24" TextAlignment="Center" ><Run Foreground="#FF483C21" Text="Time View"/></TextBlock>
+        <TextBlock Grid.Column="2" HorizontalAlignment="Left" Height="32" Margin="109.8,30.8,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" FontSize="24" TextAlignment="Center"><Run Foreground="#FF483C21" Text="Overview"/></TextBlock>
 
 
-        <DataGrid x:Name="dg_reservationOverview" Grid.Column="2" HorizontalAlignment="Left" Height="119" Margin="9.8,433.2,0,0" Grid.Row="1" VerticalAlignment="Top" Width="303"/>
-        <DatePicker x:Name ="Dp_DatePicker"  Grid.Column="1" HorizontalAlignment="Left" Margin="37.4,99.8,0,0" Grid.Row="1" VerticalAlignment="Top" Width="720" SelectedDateChanged="Dp_DatePicker_SelectedDateChanged" Height="24"  />
+        <DataGrid x:Name="dg_reservationOverview" Grid.Column="2" HorizontalAlignment="Left" Height="79" Margin="9.8,493.8,0,0" Grid.Row="1" VerticalAlignment="Top" Width="303"/>
+        <DatePicker x:Name ="Dp_DatePicker"  Grid.Column="1" HorizontalAlignment="Left" Margin="609.4,112.8,0,0" Grid.Row="1" VerticalAlignment="Top" Width="157" SelectedDateChanged="Dp_DatePicker_SelectedDateChanged" Height="24"  />
 
 
 
 
 
-        <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Left" Height="400" Margin="10.4,167.8,0,0" Grid.Row="1" VerticalAlignment="Top" Width="770">
+        <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Left" Height="400" Margin="10.4,165.8,0,0" Grid.Row="1" VerticalAlignment="Top" Width="770">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="720" Margin="30,0,0,0" >
                 <TextBlock Text="18:00" Margin="110,0,0,0"/>
                 <TextBlock Text="19:00" Margin="90,0,0,0"/>
@@ -108,12 +108,22 @@
                     <TextBlock Height="20" Margin="10,10"  Text="T9" Width="30" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" FontSize="14" />
                 </StackPanel>
                 <Border Grid.Column="2" HorizontalAlignment="Right" Height="362"  Grid.Row="1" VerticalAlignment="Top" Width="723" Background="Gray">
-                    <Canvas x:Name="Cvs_slot_1" Background="AntiqueWhite" Height="360" Width="720" />
+                    <Canvas x:Name="Cvs_slot_1" Background="White" Height="360" Width="720" />
                 </Border>
             </StackPanel>
 
         </StackPanel>
-        <Canvas Name="Cvs_gui" Grid.Column="2" HorizontalAlignment="Left" Height="363" Margin="9.8,65.2,0,0" Grid.Row="1" VerticalAlignment="Top" Width="303" Background="LightGray"/>
+        <Canvas Name="Cvs_gui" Grid.Column="2" HorizontalAlignment="Left" Height="382" Margin="9.8,97.8,0,0" Grid.Row="1" VerticalAlignment="Top" Width="303" Background="#FFD4D3B4">
+            <Border Canvas.Left="20"  Canvas.Top="341" Height="22" Width="88" Background="Black" >
+                <TextBlock TextWrapping="Wrap" Text="Availiable" Background="GreenYellow" TextAlignment="Center" FontSize="14" Margin="0,0,0,0.4"/>
+            </Border>
+            <Border Canvas.Left="180"  Canvas.Top="341" Height="22" Width="88" Background="Black" >
+                <TextBlock TextWrapping="Wrap" Text="Occupied" Background="Orange" TextAlignment="Center" FontSize="14" Margin="0,0,0,0.4"/>
+            </Border>
+
+        </Canvas>
+        <Image Source="logo.png" HorizontalAlignment="Left" Height="47" Margin="24,10,0,0" VerticalAlignment="Top" Width="45" RenderTransformOrigin="-0.232,0.064"/>
+        <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="102.4,5,0,0" TextWrapping="Wrap" Text="Table Reservation System" VerticalAlignment="Top" FontSize="48" Grid.RowSpan="2" Width="589" FontFamily="Microsoft YaHei UI" Foreground="#FF5C523B"/>
 
 
 

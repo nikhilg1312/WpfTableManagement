@@ -210,6 +210,18 @@ namespace TableManagement
             ((MainWindow)this.Owner).SelectByValueMain(((MainWindow)this.Owner).Cbx_reservation_minute, "Min");
             ((MainWindow)this.Owner).Tbx_reservation_name.Text = null;
         }
+        private void closingEtiquets()
+        {
+            ((MainWindow)this.Owner).Dtp_reservation_date.SelectedDate = null;
+            ((MainWindow)this.Owner).SelectByValueMain(((MainWindow)this.Owner).Cbx_guest_number, ".");
+            ((MainWindow)this.Owner).SelectByValueMain(((MainWindow)this.Owner).Cbx_reservation_hours, "Hrs");
+            ((MainWindow)this.Owner).SelectByValueMain(((MainWindow)this.Owner).Cbx_reservation_minute, "Min");
+            ((MainWindow)this.Owner).Tbx_reservation_name.Text = null;
+        }
 
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            closingEtiquets();
+        }
     }
 }
