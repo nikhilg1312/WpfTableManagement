@@ -73,6 +73,9 @@
       <DependentUpon>makeNewReservation.xaml</DependentUpon>
     </Compile>
     <Compile Include="MyStorage.cs" />
+    <Compile Include="newReservationFromCanvas.xaml.cs">
+      <DependentUpon>newReservationFromCanvas.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ReservationDetails.cs" />
     <Compile Include="Table.cs" />
     <Compile Include="TimeSlot.cs" />
@@ -94,6 +97,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="makeNewReservation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="newReservationFromCanvas.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

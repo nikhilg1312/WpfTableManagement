@@ -172,6 +172,8 @@ namespace TableManagement
                 editReservation.Show();
             }
 
+            e.Handled = true;
+
         }
 
         private void DrawHLines(Canvas cvs)
@@ -375,6 +377,52 @@ namespace TableManagement
                     cmb2.SelectedValue = item;
                 }
         }
+
+        private int getStartTimeGUI(double x)
+        {
+
+            var cell = Math.Ceiling((x) / (Cvs_slot_1.Width / 24));
+            var HH = 0.0;
+            if (cell % 4 == 0)
+                HH = (Math.Floor((cell - 1) / 4) + 17) * 100;
+            else
+                HH = (Math.Floor(cell / 4) + 17) * 100;
+
+            int mm = Convert.ToInt32(((cell - 1) % 4) * 15);
+            int stime = Convert.ToInt32(HH + mm);
+
+            return stime;
+        }
+
+        private void Cvs_slot_1_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            var pos = e.GetPosition(Cvs_slot_1);
+
+            var TableID = Math.Ceiling(pos.Y / (Cvs_slot_1.Height / 9));
+            int startTime = getStartTimeGUI(pos.X);
+
+            ReservationDetails reservationDetails = new ReservationDetails();
+
+            reservationDetails.StartTime = startTime;
+            reservationDetails.EndTime = startTime + 100;
+            reservationDetails.TableId = Convert.ToInt32(TableID);
+            reservationDetails.NumberOfGuest = (from tbx in App.tables where tbx.TableId.Equals(Convert.ToInt32(TableID)) select tbx.TableCapacity ).FirstOrDefault();
+
+            if (Dp_DatePicker.SelectedDate != null)
+                reservationDetails.ReservationDate = (DateTime)Dp_DatePicker.SelectedDate;
+            else
+                reservationDetails.ReservationDate = DateTime.Now.Date;
+
+
+            var newCvsReservation = new newReservationFromCanvas(reservationDetails)
+            {
+                Owner = this
+            };
+            newCvsReservation.Show();
+
+
+        }
+
 
     }
 }
