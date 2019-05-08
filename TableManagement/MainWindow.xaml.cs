@@ -67,14 +67,14 @@ namespace TableManagement
 
         private void AddTable(int i, int j,int tableNum,int status)
         {
-            var xPxl = (i+0.9)*80.0;
-            var yPxl = (j+0.7)*80;
+            var xPxl = (i+0.6)*100;
+            var yPxl = (j+0.6)*50;
 
-            var tableRec = new TextBlock
+            var tableRec = new Label
             {
-                Height = 40,
-                Width = 40,
-                Text = string.Concat("T", tableNum.ToString())
+                Height = 30,
+                Width = 30,
+                Content = string.Concat("T", tableNum.ToString())
             };
 
             if (status == 1)
@@ -94,6 +94,7 @@ namespace TableManagement
         {
             timer_upcomings_15.Start();
             TryTimeSlot(DateTime.Today);
+            Lbx_dateTime.Content = DateTime.Now.ToString("dd-MM-yyyy HH:mm");
         }
 
         public void TryTimeSlot(DateTime ipDate)
@@ -109,13 +110,21 @@ namespace TableManagement
             foreach (var item in lst)
             {
                 int tNum = tNum_all[item.TableId];
-                
-                var bar = new TextBlock();
-                bar.Tag = item.ReservationId;
-                bar.MouseUp += Bar_MouseUp;
 
                 var start_pxl = GetPxl(item.StartTime);
                 var end_pxl = GetPxl(item.EndTime);
+
+                var bar = new Label
+                {
+                    Tag = item.ReservationId,
+                    Width = end_pxl - start_pxl,
+                    Height = (Cvs_slot_1.Height / 9) - 2,
+                    Content = item.GuestName,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    HorizontalAlignment = HorizontalAlignment.Center
+
+                };
+                bar.MouseUp += Bar_MouseUp;
 
                 bar.Width = end_pxl - start_pxl;
                 bar.Height = (Cvs_slot_1.Height/9) - 2;
@@ -128,31 +137,30 @@ namespace TableManagement
                 switch (tNum)
                 {
                     case 0://dfcce8
-                        bar.Background = new BrushConverter().ConvertFromString("#dfcce8") as SolidColorBrush; ;
+                        bar.Background = new BrushConverter().ConvertFromString("#a4bed7") as SolidColorBrush; ;
                         tNum_all[item.TableId]++;
                         break;
                     case 1:
-                        bar.Background = new BrushConverter().ConvertFromString("#a4bed7") as SolidColorBrush; ;
+                        bar.Background = new BrushConverter().ConvertFromString("#dfcce8") as SolidColorBrush; ;
                         tNum_all[item.TableId]++;
                         break;
                     case 2:
                         bar.Background = new BrushConverter().ConvertFromString("#c2d5b4") as SolidColorBrush; ;
                         tNum_all[item.TableId]++;
                         break;
-                    case 4:
+                    case 3:
                         bar.Background = new BrushConverter().ConvertFromString("#cfc4a0") as SolidColorBrush; ;
                         tNum_all[item.TableId]++;
                         break;
-                    case 5:
+                    case 4:
                         bar.Background = new BrushConverter().ConvertFromString("#c2c6c7") as SolidColorBrush; ;
                         tNum_all[item.TableId]++;
                         break;
+                    case 5:
+                        bar.Background = new BrushConverter().ConvertFromString("#c8fdd3") as SolidColorBrush; ;
+                        tNum_all[item.TableId]++;
+                        break;
                 }
-
-                bar.Text = item.GuestName;
-                bar.TextAlignment = TextAlignment.Center;
-                bar.VerticalAlignment = VerticalAlignment.Center;
-                bar.HorizontalAlignment = HorizontalAlignment.Center;
 
                 Cvs_slot_1.Children.Add(bar);    
             }
@@ -169,7 +177,7 @@ namespace TableManagement
             if (!App.isDateTimeIsPast(rDate))
             {
 
-                var resID = (sender as TextBlock).Tag.ToString();
+                var resID = (sender as Label).Tag.ToString();
 
                 //status isActive
                 var r_by_name = (from r in App.reservedTables where r.ReservationId.Equals(Int32.Parse(resID)) && r.IsActive ==1 select r).FirstOrDefault();
@@ -283,7 +291,7 @@ namespace TableManagement
         {
             //status isActive
             var lst = from r in reservedTables orderby r.StartTime where r.ReservationDate.Date.Equals(ipDate.Date) && r.IsActive == 1 select r;
-            dg_reservationOverview.ItemsSource = lst;
+           // dg_reservationOverview.ItemsSource = lst;
         }
 
 

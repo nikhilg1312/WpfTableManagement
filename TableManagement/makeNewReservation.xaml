@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         Loaded="Window_Loaded"
         Closed="Window_Closed"
-        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        WindowStartupLocation="Manual" Top="190" MaxWidth="350"
         xmlns:local="clr-namespace:TableManagement"
         mc:Ignorable="d"
         Title="Select Table" Height="450" Width="270" Icon="logo.png">

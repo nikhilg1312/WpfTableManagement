@@ -26,6 +26,7 @@ namespace TableManagement
         {
             InitializeComponent();
             this.ipRDetails = _newReservation;
+            this.Left = SystemParameters.WorkArea.Width - this.MaxWidth;
         }
 
         private void Btn_Reserve_Click(object sender, RoutedEventArgs e)
