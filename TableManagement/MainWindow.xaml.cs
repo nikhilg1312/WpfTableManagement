@@ -32,6 +32,29 @@ namespace TableManagement
             LoadUpcomingGuest();
             LoadCvsGui();
             Lbx_dateTime.Content = DateTime.Now.ToString("dd-MM-yyyy   HH:mm");
+            DrawCurrentTimeLine();
+        }
+
+        private void DrawCurrentTimeLine()
+        {
+            if (Dp_DatePicker.SelectedDate == null || Dp_DatePicker.SelectedDate == DateTime.Today.Date)
+            {
+                DateTime baseTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 17, 0, 0);
+                DateTime currDateTime = DateTime.Now;
+                var diffInMin = currDateTime.Subtract(baseTime).TotalMinutes;
+                Line line = new Line();
+                line.Stroke = Brushes.MediumVioletRed;
+
+                line.X1 = diffInMin*2;
+                line.Y1 = 0;
+                line.X2 = diffInMin*2;
+                line.Y2 = Cvs_slot_1.Height;
+
+                line.StrokeThickness = 1;
+                Cvs_slot_1.Children.Add(line);
+                
+            }
+
         }
 
         private void LoadCvsGui()
