@@ -31,6 +31,7 @@ namespace TableManagement
             LoadUpcomingFreeTables();
             LoadUpcomingGuest();
             LoadCvsGui();
+            Lbx_dateTime.Content = DateTime.Now.ToString("dd-MM-yyyy   HH:mm");
         }
 
         private void LoadCvsGui()
@@ -94,7 +95,7 @@ namespace TableManagement
         {
             timer_upcomings_15.Start();
             TryTimeSlot(DateTime.Today);
-            Lbx_dateTime.Content = DateTime.Now.ToString("dd-MM-yyyy   HH:mm");
+            
         }
 
         public void TryTimeSlot(DateTime ipDate)
