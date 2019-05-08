@@ -8,7 +8,7 @@
         WindowStartupLocation="CenterScreen"
         xmlns:local="clr-namespace:TableManagement"
         mc:Ignorable="d"
-        Title="Select Table" Height="450" Width="270">
+        Title="Select Table" Height="450" Width="270" Icon="logo.png">
     <Grid >
         <StackPanel>
             <StackPanel Height="30">

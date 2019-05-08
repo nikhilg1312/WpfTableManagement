@@ -55,18 +55,19 @@ namespace TableManagement
             {
                 ipRDetails.GuestName = TxtBx_rName.Text;
                 ipRDetails.ReservationId = App.reservedTables.Max(x => x.ReservationId) + 1;
+                
 
                 if (MessageBox.Show("Are you sure with Reservation Details?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
                 {
                     App.reservedTables.Add(ipRDetails);
                     this.Close();
-                    closingEtiquets(ipRDetails.ReservationDate);
+                    ClosingEtiquets(ipRDetails.ReservationDate);
                 }
 
 
             }
         }
-        private void closingEtiquets(DateTime rDate)
+        private void ClosingEtiquets(DateTime rDate)
         {
             ((MainWindow)this.Owner).TryTimeSlot(rDate);
             ((MainWindow)this.Owner).Dp_DatePicker.SelectedDate = rDate.Date;

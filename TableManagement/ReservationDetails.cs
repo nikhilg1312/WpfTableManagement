@@ -15,6 +15,7 @@ namespace TableManagement
         public int StartTime { get; set; }
         public int EndTime { get; set; }
         public int NumberOfGuest { get; set; }
+        public int IsActive { get; set; }
     }
 
 }

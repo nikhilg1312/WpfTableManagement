@@ -7,10 +7,10 @@
         Closed="Window_Closed"
         xmlns:local="clr-namespace:TableManagement"
         mc:Ignorable="d"
-        Title="newReservationFromCanvas" Height="225" Width="270">
+        Title="Resevation Details" Height="225" Width="270" Icon="logo.png" >
     <Grid>
         <StackPanel HorizontalAlignment="Left" Height="185"  VerticalAlignment="Top" Width="243" Margin="10,10,0,0">
-            <TextBlock Text="New Reservation" FontSize="25" Margin="0,0,0,5"/>
+            <TextBlock Text="New Reservation" FontSize="18" Margin="0,0,0.2,0" Height="37"/>
             <StackPanel Orientation="Horizontal" Margin="0,0,2,4">
                 <TextBlock Text="Number of Guest "/>
                 <TextBlock x:Name ="TxtBlk_NoOfGuest" Margin="30,0,0,0" />

@@ -44,6 +44,7 @@ namespace TableManagement
                 ipRDetails.EndTime = ((Int32.Parse(Cbx_reservation_hours.Text) + 1) * 100) + Int32.Parse(Cbx_reservation_minute.Text);
                 ipRDetails.GuestName = TxtBx_rName.Text;
                 ipRDetails.TableId = selectedTableID;
+                ipRDetails.IsActive =  1;
 
                 //Console.WriteLine("IPdetails : " + ipRDetails.ReservationId + " |" + ipRDetails.TableId + " |" + ipRDetails.GuestName + " |" + ipRDetails.ReservationDate + " |" +ipRDetails.StartTime + " |" +ipRDetails.EndTime);
                 
@@ -83,9 +84,16 @@ namespace TableManagement
             Dg_emptyTables.Visibility = Visibility.Collapsed;
 
             if (!App.isDateTimeIsPast(ipRDetails.ReservationDate.Date))
+            {
                 Btn_Load.Visibility = Visibility.Visible;
+                Btn_Del.Visibility = Visibility.Visible;
+            } 
             else
+            {
                 Btn_Load.Visibility = Visibility.Collapsed;
+                Btn_Del.Visibility = Visibility.Visible;
+            }
+                
 
 
         }
@@ -104,6 +112,7 @@ namespace TableManagement
             if (Btn_Load != null & Btn_Reserve != null & Dg_emptyTables != null)
             {
                 Btn_Load.Visibility = Visibility.Visible;
+                Btn_Del.Visibility = Visibility.Visible;
                 Btn_Reserve.Visibility = Visibility.Collapsed;
                 Dg_emptyTables.Visibility = Visibility.Collapsed;
             }
@@ -116,6 +125,7 @@ namespace TableManagement
             if (Btn_Load != null & Btn_Reserve != null & Dg_emptyTables != null)
             {
                 Btn_Load.Visibility = Visibility.Visible;
+                Btn_Del.Visibility = Visibility.Visible;
                 Btn_Reserve.Visibility = Visibility.Collapsed;
                 Dg_emptyTables.Visibility = Visibility.Collapsed;
             }
@@ -127,6 +137,7 @@ namespace TableManagement
             if (Btn_Load != null & Btn_Reserve != null & Dg_emptyTables != null)
             {
                 Btn_Load.Visibility = Visibility.Visible;
+                Btn_Del.Visibility = Visibility.Visible;
                 Btn_Reserve.Visibility = Visibility.Collapsed;
                 Dg_emptyTables.Visibility = Visibility.Collapsed;
             }
@@ -137,6 +148,7 @@ namespace TableManagement
             if (Btn_Load != null & Btn_Reserve != null & Dg_emptyTables != null)
             {
                 Btn_Load.Visibility = Visibility.Visible;
+                Btn_Del.Visibility = Visibility.Visible;
                 Btn_Reserve.Visibility = Visibility.Collapsed;
                 Dg_emptyTables.Visibility = Visibility.Collapsed;
             }
@@ -148,6 +160,7 @@ namespace TableManagement
             if (Btn_Load != null & Btn_Reserve != null & Dg_emptyTables != null)
             {
                 Btn_Load.Visibility = Visibility.Visible;
+                Btn_Del.Visibility = Visibility.Visible;
                 Btn_Reserve.Visibility = Visibility.Collapsed;
                 Dg_emptyTables.Visibility = Visibility.Collapsed;
             }
@@ -182,7 +195,8 @@ namespace TableManagement
                     var booked_tables = (from et in App.reservedTables
                                          where
                                          et.ReservationDate.Date.Equals((DateTime)Dtp_reservation_date.SelectedDate) &&
-                                         ((et_endtime > et.StartTime && et_endtime < et.EndTime) || (et_startTime > et.StartTime && et_startTime < et.EndTime))
+                                         ((et_endtime > et.StartTime && et_endtime < et.EndTime) || (et_startTime > et.StartTime && et_startTime < et.EndTime)) &&
+                                         et.IsActive ==1
                                          select et.TableId).ToList();
                     
                     var empty_tables = App.tables.Where(i => !booked_tables.Contains(i.TableId) && i.TableCapacity >= Int32.Parse(Cbx_guest_number.Text));
@@ -212,7 +226,8 @@ namespace TableManagement
             CheckAvailiablityForNewParameters();
             Btn_Reserve.Visibility = Visibility.Visible;
             Btn_Load.Visibility = Visibility.Collapsed;
-            
+            Btn_Del.Visibility = Visibility.Collapsed;
+
         }
 
         private void closingEtiquets(DateTime rDate)
@@ -238,6 +253,22 @@ namespace TableManagement
         {
             App.IsEditReservationOpen = false;
             closingEtiquets();
+        }
+
+        private void Btn_Del_Click(object sender, RoutedEventArgs e)
+        {
+            App.reservedTables.Remove(ipRDetails);
+
+            ipRDetails.IsActive = 0;
+
+            Console.WriteLine("IPdetails : " + ipRDetails.ReservationId + " |" + ipRDetails.TableId + " |" + ipRDetails.GuestName + " |" + ipRDetails.ReservationDate + " |" +ipRDetails.StartTime + " |" +ipRDetails.EndTime + " |" + ipRDetails.IsActive);
+
+            if (MessageBox.Show("Are you sure with Reservation Details?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+            {
+                App.reservedTables.Add(ipRDetails);
+                this.Close();
+                closingEtiquets(ipRDetails.ReservationDate);
+            }
         }
     }
 }

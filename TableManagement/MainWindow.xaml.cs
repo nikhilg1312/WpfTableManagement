@@ -40,7 +40,8 @@ namespace TableManagement
                       orderby r.TableId
                       where r.ReservationDate.Date.Equals(DateTime.Today.Date) &
                             r.StartTime < Int32.Parse(DateTime.Now.ToString("HHmm")) &
-                            r.EndTime > Int32.Parse(DateTime.Now.ToString("HHmm"))
+                            r.EndTime > Int32.Parse(DateTime.Now.ToString("HHmm")) &
+                            r.IsActive == 1
                       select new { r.TableId };
 
             int[] status_array = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0 };
@@ -102,7 +103,7 @@ namespace TableManagement
             DrawHLines(Cvs_slot_1);
 
             //status isActive
-            var lst = from r in App.reservedTables orderby r.TableId where r.ReservationDate.Date.Equals(ipDate.Date) select r;
+            var lst = from r in App.reservedTables orderby r.TableId where r.ReservationDate.Date.Equals(ipDate.Date) && r.IsActive ==1 select r;
             int[] tNum_all = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0 , 0 };
 
             foreach (var item in lst)
@@ -171,7 +172,7 @@ namespace TableManagement
                 var resID = (sender as TextBlock).Tag.ToString();
 
                 //status isActive
-                var r_by_name = (from r in App.reservedTables where r.ReservationId.Equals(Int32.Parse(resID)) select r).FirstOrDefault();
+                var r_by_name = (from r in App.reservedTables where r.ReservationId.Equals(Int32.Parse(resID)) && r.IsActive ==1 select r).FirstOrDefault();
                 if (r_by_name != null & !App.IsEditReservationOpen)
                 {
                     var editReservation = new EditReservation(r_by_name)
@@ -247,7 +248,8 @@ namespace TableManagement
                            orderby r.EndTime
                            where
                            r.ReservationDate.Date == DateTime.Today.Date &&
-                           r.EndTime > Int32.Parse(DateTime.Now.ToString("HHmm"))
+                           r.EndTime > Int32.Parse(DateTime.Now.ToString("HHmm")) &&
+                           r.IsActive == 1
                            select new {
                                         Name = r.GuestName ,
                                         Table_Number = r.TableId,
@@ -265,7 +267,8 @@ namespace TableManagement
                            orderby r.StartTime
                            where
                            r.ReservationDate.Date == DateTime.Today.Date &&
-                           r.StartTime > Int32.Parse(DateTime.Now.ToString("HHmm"))
+                           r.StartTime > Int32.Parse(DateTime.Now.ToString("HHmm")) &&
+                           r.IsActive == 1
                            select new {
                                        Name = r.GuestName,
                                        Table_Number = r.TableId,
@@ -279,7 +282,7 @@ namespace TableManagement
         private void GetTableSchedule(ObservableCollection<ReservationDetails> reservedTables, DateTime ipDate)
         {
             //status isActive
-            var lst = from r in reservedTables orderby r.StartTime where r.ReservationDate.Date.Equals(ipDate.Date) select r;
+            var lst = from r in reservedTables orderby r.StartTime where r.ReservationDate.Date.Equals(ipDate.Date) && r.IsActive == 1 select r;
             dg_reservationOverview.ItemsSource = lst;
         }
 
@@ -305,7 +308,7 @@ namespace TableManagement
                 if (  Cbx_guest_number.Text.Equals(".") & Dtp_reservation_date.SelectedDate == null & Cbx_reservation_hours.Text.Equals("Hrs")
                     & Cbx_reservation_minute.Text.Equals("Min") & !string.IsNullOrEmpty(Tbx_reservation_name.Text)                            )
                 {
-                    var r_by_name = (from r in App.reservedTables where r.GuestName.Equals(Tbx_reservation_name.Text) select r).FirstOrDefault();
+                    var r_by_name = (from r in App.reservedTables where r.GuestName.Equals(Tbx_reservation_name.Text) && r.IsActive == 1 select r).FirstOrDefault();
                     if (r_by_name != null & !App.IsEditReservationOpen)
                     {
                         var editReservation = new EditReservation(r_by_name)
@@ -336,7 +339,8 @@ namespace TableManagement
                             var booked_tables = (from et in App.reservedTables
                                                  where
                                                  et.ReservationDate.Date.Equals((DateTime)Dtp_reservation_date.SelectedDate) &&
-                                                 ((et_endtime > et.StartTime && et_endtime < et.EndTime) || (et_startTime > et.StartTime && et_startTime < et.EndTime))
+                                                 ((et_endtime > et.StartTime && et_endtime < et.EndTime) || (et_startTime > et.StartTime && et_startTime < et.EndTime)) &&
+                                                 et.IsActive == 1
                                                  select et.TableId).ToList();
                             // todo check if time overlapps
                             var empty_tables = App.tables.Where(i => !booked_tables.Contains(i.TableId) && i.TableCapacity >= Int32.Parse(Cbx_guest_number.Text));
@@ -350,6 +354,7 @@ namespace TableManagement
                                     ReservationDate = (DateTime)Dtp_reservation_date.SelectedDate,
                                     StartTime = Int32.Parse(Cbx_reservation_hours.Text) * 100 + Int32.Parse(Cbx_reservation_minute.Text),
                                     EndTime = ((Int32.Parse(Cbx_reservation_hours.Text) + 1) * 100) + Int32.Parse(Cbx_reservation_minute.Text),
+                                    IsActive = 1
 
                                 };
 
@@ -372,7 +377,11 @@ namespace TableManagement
                 if (Cbx_guest_number.Text.Equals(".") & Dtp_reservation_date.SelectedDate != null & Cbx_reservation_hours.Text.Equals("Hrs")
                     & Cbx_reservation_minute.Text.Equals("Min") & !string.IsNullOrEmpty(Tbx_reservation_name.Text))
                 {
-                    var r_by_name_n_Date = (from r in App.reservedTables where r.GuestName.Equals(Tbx_reservation_name.Text) && r.ReservationDate.Date.Equals((DateTime)Dtp_reservation_date.SelectedDate) select r).FirstOrDefault();
+                    var r_by_name_n_Date = (from r in App.reservedTables
+                                            where r.GuestName.Equals(Tbx_reservation_name.Text) &&
+                                            r.ReservationDate.Date.Equals((DateTime)Dtp_reservation_date.SelectedDate) &&
+                                            r.IsActive == 1
+                                            select r).FirstOrDefault();
                     if (r_by_name_n_Date != null & !App.IsEditReservationOpen)
                     {
                         var editReservation = new EditReservation(r_by_name_n_Date)
@@ -438,7 +447,8 @@ namespace TableManagement
                                      where
                                      et.ReservationDate.Date.Equals(rDate) &&
                                      et.TableId.Equals(Convert.ToInt32(TableID)) &&
-                                     ((endTime > et.StartTime && endTime < et.EndTime) || (startTime > et.StartTime && startTime < et.EndTime))
+                                     ((endTime > et.StartTime && endTime < et.EndTime) || (startTime > et.StartTime && startTime < et.EndTime)) &&
+                                     et.IsActive == 1
                                      select et.TableId).ToList();
 
                 Console.WriteLine("IsCVSnewReservationOpen : " +App.IsCVSnewReservationOpen);
@@ -452,7 +462,9 @@ namespace TableManagement
                         EndTime = startTime + 100,
                         TableId = Convert.ToInt32(TableID),
                         ReservationDate = rDate,
-                        NumberOfGuest = (from tbx in App.tables where tbx.TableId.Equals(Convert.ToInt32(TableID)) select tbx.TableCapacity).FirstOrDefault()
+                        NumberOfGuest = (from tbx in App.tables where tbx.TableId.Equals(Convert.ToInt32(TableID)) select tbx.TableCapacity).FirstOrDefault(),
+                        IsActive = 1
+                        
                     };
 
 

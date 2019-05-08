@@ -7,7 +7,7 @@
         Closed="Window_Closed"  
         xmlns:local="clr-namespace:TableManagement"
         mc:Ignorable="d"
-        Title="Reservation Details " Height="493.569" Width="270">
+        Title="Reservation Details " Height="493.569" Width="270" Icon="logo.png">
     <Grid >
         <StackPanel>
             <StackPanel Height="30">
@@ -53,7 +53,10 @@
                     <TextBlock Text="Reservation Name"/>
                     <TextBox Name ="TxtBx_rName" Width="88" Margin="22,0,0,0" TextChanged="TxtBx_rName_TextChanged" />
                 </StackPanel>
-                <Button Name="Btn_Load" Content="Load"  Width="70" Margin="0,5,0,5" Click="Btn_Load_Click" />
+                <StackPanel  Orientation="Horizontal">
+                    <Button x:Name="Btn_Load" Content="Load"  Width="70" Margin="20,0,20,0" Click="Btn_Load_Click" />
+                    <Button x:Name="Btn_Del" Content="Delete"  Width="70" Margin="20,0,20,0" Click="Btn_Del_Click" />
+                </StackPanel>
                 <DataGrid Name ="Dg_emptyTables" Height="150" Margin="0,0,2.2,4"  />
                 <Button Name="Btn_Reserve" Content="Reserve"  Width="70" Margin="0,20,0,0" Click="Btn_Reserve_Click" />
             </StackPanel>
