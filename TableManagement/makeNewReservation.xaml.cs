@@ -35,6 +35,8 @@ namespace TableManagement
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            App.IsMakeNewReservationOpen = true;
+
             int u = ipRDetails.StartTime % 10;
             int t = (ipRDetails.StartTime / 10) % 10;
             int h = (ipRDetails.StartTime / 100) % 10;
@@ -101,6 +103,7 @@ namespace TableManagement
 
         private void Window_Closed(object sender, EventArgs e)
         {
+            App.IsMakeNewReservationOpen = false;
             closingEtiquets();
         }
     }

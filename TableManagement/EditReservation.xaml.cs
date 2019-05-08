@@ -34,7 +34,7 @@ namespace TableManagement
 
 
             // todo all ip checks
-            if (!string.IsNullOrEmpty(TxtBx_rName.Text) & selectedTableID != 0)
+            if (!string.IsNullOrEmpty(TxtBx_rName.Text) & selectedTableID != 0 & (((Int32.Parse(Cbx_reservation_hours.Text) + 1) * 100) + Int32.Parse(Cbx_reservation_minute.Text) <=2300) )
             {
                 App.reservedTables.Remove(ipRDetails);
 
@@ -46,6 +46,8 @@ namespace TableManagement
                 ipRDetails.TableId = selectedTableID;
 
                 //Console.WriteLine("IPdetails : " + ipRDetails.ReservationId + " |" + ipRDetails.TableId + " |" + ipRDetails.GuestName + " |" + ipRDetails.ReservationDate + " |" +ipRDetails.StartTime + " |" +ipRDetails.EndTime);
+                
+
 
                 if (MessageBox.Show("Are you sure with Reservation Details?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
                 {
@@ -62,10 +64,16 @@ namespace TableManagement
             {
                 MessageBox.Show("Please enter Guest Name", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+            if (((Int32.Parse(Cbx_reservation_hours.Text) + 1) * 100) + Int32.Parse(Cbx_reservation_minute.Text) >2300)
+            {
+                MessageBox.Show("Please Select apropriate Time Slot", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            App.IsEditReservationOpen = true;
+
             Dtp_reservation_date.SelectedDate = ipRDetails.ReservationDate.Date;
             SelectByValue(Cbx_guest_number,ipRDetails.NumberOfGuest.ToString());
             SelectByValue(Cbx_reservation_hours,ipRDetails.StartTime.ToString().Substring(0,2));
@@ -73,6 +81,13 @@ namespace TableManagement
             TxtBx_rName.Text = ipRDetails.GuestName;
             Btn_Reserve.Visibility = Visibility.Collapsed;
             Dg_emptyTables.Visibility = Visibility.Collapsed;
+
+            if (!App.isDateTimeIsPast(ipRDetails.ReservationDate.Date))
+                Btn_Load.Visibility = Visibility.Visible;
+            else
+                Btn_Load.Visibility = Visibility.Collapsed;
+
+
         }
         public static void SelectByValue(ComboBox cmb2, string value)
         {
@@ -148,18 +163,17 @@ namespace TableManagement
             
             else
             {
-                Console.WriteLine("Cbx_guest_number: " + Cbx_guest_number.Text);
-                Console.WriteLine("Dtp_reservation_date" + Dtp_reservation_date.SelectedDate.ToString());
-                Console.WriteLine("Hrs : Min " + Cbx_reservation_hours.Text + ":" + Cbx_reservation_minute.Text);
-                Console.WriteLine("Name :" + TxtBx_rName.Text);
-                Console.WriteLine("is past ? " + !App.isDateTimeIsPast((DateTime)Dtp_reservation_date.SelectedDate, Int32.Parse(Cbx_reservation_hours.Text) * 100 + Int32.Parse(Cbx_reservation_minute.Text)));
-
-
+                //Console.WriteLine("Cbx_guest_number: " + Cbx_guest_number.Text);
+                //Console.WriteLine("Dtp_reservation_date" + Dtp_reservation_date.SelectedDate.ToString());
+                //Console.WriteLine("Hrs : Min " + Cbx_reservation_hours.Text + ":" + Cbx_reservation_minute.Text);
+                //Console.WriteLine("Name :" + TxtBx_rName.Text);
+                //Console.WriteLine("is past ? " + !App.isDateTimeIsPast((DateTime)Dtp_reservation_date.SelectedDate, Int32.Parse(Cbx_reservation_hours.Text) * 100 + Int32.Parse(Cbx_reservation_minute.Text)));
+                
                 if (!Cbx_guest_number.Text.Equals(".") & Dtp_reservation_date.SelectedDate != null & !Cbx_reservation_hours.Text.Equals("Hrs")
                  & !Cbx_reservation_minute.Text.Equals("Min") & !string.IsNullOrEmpty(TxtBx_rName.Text)
                  & !App.isDateTimeIsPast((DateTime)Dtp_reservation_date.SelectedDate, Int32.Parse(Cbx_reservation_hours.Text) * 100 + Int32.Parse(Cbx_reservation_minute.Text)))
                 {
-                    Console.WriteLine("Inside THE LOOP");
+                    
 
                     App.reservedTables.Remove(ipRDetails);
                     int et_startTime = Int32.Parse(Cbx_reservation_hours.Text) * 100 + Int32.Parse(Cbx_reservation_minute.Text);
@@ -170,14 +184,13 @@ namespace TableManagement
                                          et.ReservationDate.Date.Equals((DateTime)Dtp_reservation_date.SelectedDate) &&
                                          ((et_endtime > et.StartTime && et_endtime < et.EndTime) || (et_startTime > et.StartTime && et_startTime < et.EndTime))
                                          select et.TableId).ToList();
-                    Console.WriteLine("booked tables Count : " + booked_tables.Count());
+                    
                     var empty_tables = App.tables.Where(i => !booked_tables.Contains(i.TableId) && i.TableCapacity >= Int32.Parse(Cbx_guest_number.Text));
 
                     App.reservedTables.Add(ipRDetails);
 
                     if (empty_tables.Count() > 0)
                     {
-                        Console.WriteLine("empty table count : " + empty_tables.Count());
                         Dg_emptyTables.Visibility = Visibility.Visible;
                         Dg_emptyTables.ItemsSource = (from et in empty_tables select new { et.TableId, et.TableCapacity }).ToList();
                     }
@@ -187,6 +200,8 @@ namespace TableManagement
                     }
 
                 }
+                else
+                    MessageBox.Show("Enter Appropriate Input", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
             }
         }
@@ -221,6 +236,7 @@ namespace TableManagement
 
         private void Window_Closed(object sender, EventArgs e)
         {
+            App.IsEditReservationOpen = false;
             closingEtiquets();
         }
     }

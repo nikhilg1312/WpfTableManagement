@@ -35,6 +35,7 @@ namespace TableManagement
 
         private void LoadCvsGui()
         {
+            //status isActive
             var res = from r in App.reservedTables
                       orderby r.TableId
                       where r.ReservationDate.Date.Equals(DateTime.Today.Date) &
@@ -100,6 +101,7 @@ namespace TableManagement
             DrawVLines(Cvs_slot_1);
             DrawHLines(Cvs_slot_1);
 
+            //status isActive
             var lst = from r in App.reservedTables orderby r.TableId where r.ReservationDate.Date.Equals(ipDate.Date) select r;
             int[] tNum_all = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0 , 0 };
 
@@ -160,20 +162,29 @@ namespace TableManagement
 
         private void Bar_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            var resID = (sender as TextBlock).Tag.ToString();
-
-            var r_by_name = (from r in App.reservedTables where r.ReservationId.Equals(Int32.Parse(resID)) select r).FirstOrDefault();
-            if (r_by_name != null)
+            var rDate = DateTime.Now.Date;
+            if (Dp_DatePicker.SelectedDate != null)
+                rDate = (DateTime)Dp_DatePicker.SelectedDate;
+            if (!App.isDateTimeIsPast(rDate))
             {
-                var editReservation = new EditReservation(r_by_name)
+
+                var resID = (sender as TextBlock).Tag.ToString();
+
+                //status isActive
+                var r_by_name = (from r in App.reservedTables where r.ReservationId.Equals(Int32.Parse(resID)) select r).FirstOrDefault();
+                if (r_by_name != null & !App.IsEditReservationOpen)
                 {
-                    Owner = this
-                };
-                editReservation.Show();
+                    var editReservation = new EditReservation(r_by_name)
+                    {
+                        Owner = this
+                    };
+                    editReservation.Show();
+                }
+
+                
             }
 
             e.Handled = true;
-
         }
 
         private void DrawHLines(Canvas cvs)
@@ -231,6 +242,7 @@ namespace TableManagement
 
         private void LoadUpcomingFreeTables()
         {
+            //status isActive
             var upg_lst = (from r in App.reservedTables
                            orderby r.EndTime
                            where
@@ -248,6 +260,7 @@ namespace TableManagement
 
         private void LoadUpcomingGuest()
         {
+            //status isActive
             var upg_lst = (from r in App.reservedTables
                            orderby r.StartTime
                            where
@@ -265,6 +278,7 @@ namespace TableManagement
 
         private void GetTableSchedule(ObservableCollection<ReservationDetails> reservedTables, DateTime ipDate)
         {
+            //status isActive
             var lst = from r in reservedTables orderby r.StartTime where r.ReservationDate.Date.Equals(ipDate.Date) select r;
             dg_reservationOverview.ItemsSource = lst;
         }
@@ -292,7 +306,7 @@ namespace TableManagement
                     & Cbx_reservation_minute.Text.Equals("Min") & !string.IsNullOrEmpty(Tbx_reservation_name.Text)                            )
                 {
                     var r_by_name = (from r in App.reservedTables where r.GuestName.Equals(Tbx_reservation_name.Text) select r).FirstOrDefault();
-                    if (r_by_name != null)
+                    if (r_by_name != null & !App.IsEditReservationOpen)
                     {
                         var editReservation = new EditReservation(r_by_name)
                         {
@@ -316,31 +330,36 @@ namespace TableManagement
                         int et_startTime = Int32.Parse(Cbx_reservation_hours.Text) * 100 + Int32.Parse(Cbx_reservation_minute.Text);
                         int et_endtime = ((Int32.Parse(Cbx_reservation_hours.Text) + 1) * 100) + Int32.Parse(Cbx_reservation_minute.Text);
 
-                        var booked_tables = (from et in App.reservedTables
-                                             where
-                                             et.ReservationDate.Date.Equals((DateTime)Dtp_reservation_date.SelectedDate) &&
-                                             ((et_endtime > et.StartTime && et_endtime < et.EndTime) || (et_startTime > et.StartTime && et_startTime < et.EndTime))
-                                             select et.TableId).ToList();
 
-                        var empty_tables = App.tables.Where(i => !booked_tables.Contains(i.TableId) && i.TableCapacity >= Int32.Parse(Cbx_guest_number.Text));
-
-                        if (empty_tables.Count() > 0)
+                        if (et_endtime <= 2300)
                         {
+                            var booked_tables = (from et in App.reservedTables
+                                                 where
+                                                 et.ReservationDate.Date.Equals((DateTime)Dtp_reservation_date.SelectedDate) &&
+                                                 ((et_endtime > et.StartTime && et_endtime < et.EndTime) || (et_startTime > et.StartTime && et_startTime < et.EndTime))
+                                                 select et.TableId).ToList();
+                            // todo check if time overlapps
+                            var empty_tables = App.tables.Where(i => !booked_tables.Contains(i.TableId) && i.TableCapacity >= Int32.Parse(Cbx_guest_number.Text));
 
-                            ReservationDetails newReservation = new ReservationDetails
+                            if (empty_tables.Count() > 0 & !App.IsMakeNewReservationOpen)
                             {
-                                NumberOfGuest = Int32.Parse(Cbx_guest_number.Text),
-                                ReservationDate = (DateTime)Dtp_reservation_date.SelectedDate,
-                                StartTime = Int32.Parse(Cbx_reservation_hours.Text) * 100 + Int32.Parse(Cbx_reservation_minute.Text),
-                                EndTime = ((Int32.Parse(Cbx_reservation_hours.Text) + 1) * 100) + Int32.Parse(Cbx_reservation_minute.Text),
 
-                            };
+                                ReservationDetails newReservation = new ReservationDetails
+                                {
+                                    NumberOfGuest = Int32.Parse(Cbx_guest_number.Text),
+                                    ReservationDate = (DateTime)Dtp_reservation_date.SelectedDate,
+                                    StartTime = Int32.Parse(Cbx_reservation_hours.Text) * 100 + Int32.Parse(Cbx_reservation_minute.Text),
+                                    EndTime = ((Int32.Parse(Cbx_reservation_hours.Text) + 1) * 100) + Int32.Parse(Cbx_reservation_minute.Text),
 
-                            var newReservationWindow = new makeNewReservation(newReservation, empty_tables)
-                            {
-                                Owner = this
-                            };
-                            newReservationWindow.Show();
+                                };
+
+                                var newReservationWindow = new makeNewReservation(newReservation, empty_tables)
+                                {
+                                    Owner = this
+                                };
+                                newReservationWindow.Show();
+                            }
+                        
                         }
                         else
                         {
@@ -354,7 +373,7 @@ namespace TableManagement
                     & Cbx_reservation_minute.Text.Equals("Min") & !string.IsNullOrEmpty(Tbx_reservation_name.Text))
                 {
                     var r_by_name_n_Date = (from r in App.reservedTables where r.GuestName.Equals(Tbx_reservation_name.Text) && r.ReservationDate.Date.Equals((DateTime)Dtp_reservation_date.SelectedDate) select r).FirstOrDefault();
-                    if (r_by_name_n_Date != null)
+                    if (r_by_name_n_Date != null & !App.IsEditReservationOpen)
                     {
                         var editReservation = new EditReservation(r_by_name_n_Date)
                         {
@@ -396,29 +415,61 @@ namespace TableManagement
 
         private void Cvs_slot_1_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            var pos = e.GetPosition(Cvs_slot_1);
-
-            var TableID = Math.Ceiling(pos.Y / (Cvs_slot_1.Height / 9));
-            int startTime = getStartTimeGUI(pos.X);
-
-            ReservationDetails reservationDetails = new ReservationDetails();
-
-            reservationDetails.StartTime = startTime;
-            reservationDetails.EndTime = startTime + 100;
-            reservationDetails.TableId = Convert.ToInt32(TableID);
-            reservationDetails.NumberOfGuest = (from tbx in App.tables where tbx.TableId.Equals(Convert.ToInt32(TableID)) select tbx.TableCapacity ).FirstOrDefault();
-
+            var rDate = DateTime.Now.Date;
             if (Dp_DatePicker.SelectedDate != null)
-                reservationDetails.ReservationDate = (DateTime)Dp_DatePicker.SelectedDate;
-            else
-                reservationDetails.ReservationDate = DateTime.Now.Date;
+                rDate = (DateTime)Dp_DatePicker.SelectedDate;
 
+            Console.WriteLine("Date : " + rDate);
 
-            var newCvsReservation = new newReservationFromCanvas(reservationDetails)
+            if (!App.isDateTimeIsPast(rDate))
             {
-                Owner = this
-            };
-            newCvsReservation.Show();
+                var pos = e.GetPosition(Cvs_slot_1);
+
+                var TableID = Math.Ceiling(pos.Y / (Cvs_slot_1.Height / 9));
+                int startTime = getStartTimeGUI(pos.X);
+                int endTime = startTime + 100;
+
+
+                Console.WriteLine("start Time " + startTime);
+                Console.WriteLine("end Time " + endTime);
+                
+
+                var booked_tables = (from et in App.reservedTables
+                                     where
+                                     et.ReservationDate.Date.Equals(rDate) &&
+                                     et.TableId.Equals(Convert.ToInt32(TableID)) &&
+                                     ((endTime > et.StartTime && endTime < et.EndTime) || (startTime > et.StartTime && startTime < et.EndTime))
+                                     select et.TableId).ToList();
+
+                Console.WriteLine("IsCVSnewReservationOpen : " +App.IsCVSnewReservationOpen);
+
+                if (booked_tables.Count() == 0 & endTime <= 2300 & !App.IsCVSnewReservationOpen)
+                {
+
+                    ReservationDetails reservationDetails = new ReservationDetails
+                    {
+                        StartTime = startTime,
+                        EndTime = startTime + 100,
+                        TableId = Convert.ToInt32(TableID),
+                        ReservationDate = rDate,
+                        NumberOfGuest = (from tbx in App.tables where tbx.TableId.Equals(Convert.ToInt32(TableID)) select tbx.TableCapacity).FirstOrDefault()
+                    };
+
+
+ 
+                        var newCvsReservation = new newReservationFromCanvas(reservationDetails)
+                        {
+                            Owner = this
+                        };
+                        newCvsReservation.Show();
+
+                }
+                else
+                    MessageBox.Show("Time Overlapped! Please select other time slot", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
+            }
+
+           
 
 
         }

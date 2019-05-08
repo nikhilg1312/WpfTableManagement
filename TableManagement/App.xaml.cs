@@ -17,11 +17,14 @@ namespace TableManagement
     {
         public static ObservableCollection<ReservationDetails> reservedTables = MyStorage.ReadXML<ObservableCollection<ReservationDetails>>("reservedTables.xml");
         public static ObservableCollection<Table> tables = MyStorage.ReadXML<ObservableCollection<Table>>("tables.xml");
+        public static bool IsMakeNewReservationOpen = false;
+        public static bool IsEditReservationOpen = false;
+        public static bool IsCVSnewReservationOpen = false;
         public static bool isDateTimeIsPast(DateTime ipDate,int time)
         {
             var whole_ipDate = new DateTime(ipDate.Year,ipDate.Month,ipDate.Day,Int32.Parse(time.ToString().Substring(0,2) ), Int32.Parse(time.ToString().Substring(2, 2)) ,0 );
 
-            if (DateTime.Now >= whole_ipDate)
+            if (DateTime.Now > whole_ipDate)
                 return true;
             return false;
 
@@ -31,7 +34,7 @@ namespace TableManagement
         {
             var whole_ipDate = new DateTime(ipDate.Year, ipDate.Month, ipDate.Day, 0, 0, 0);
 
-            if (DateTime.Now >= whole_ipDate)
+            if (DateTime.Now.Date > whole_ipDate)
                 return true;
             return false;
 

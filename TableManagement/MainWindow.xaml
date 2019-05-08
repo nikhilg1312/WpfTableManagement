@@ -38,7 +38,7 @@
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                 <TextBlock Margin="0,0,0,0"><Run Foreground="#FF483C21" Text="Reservation Date"/></TextBlock>
-                <DatePicker x:Name="Dtp_reservation_date"  Margin="27,0,-0.2,0" RenderTransformOrigin="0.494,2.096"  SelectedDateFormat="Short"/>
+                <DatePicker x:Name="Dtp_reservation_date"  Margin="27,0,-0.2,0" DisplayDateStart="{x:Static sys:DateTime.Now}" RenderTransformOrigin="0.494,2.096"  SelectedDateFormat="Short"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Margin="0,0,0,0"><Run Foreground="#FF483C21" Text="Reservation "/><Run Text="Time"/></TextBlock>

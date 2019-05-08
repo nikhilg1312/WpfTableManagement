@@ -29,6 +29,8 @@ namespace TableManagement
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            App.IsCVSnewReservationOpen = true;
+
             int u = ipRDetails.StartTime % 10;
             int t = (ipRDetails.StartTime / 10) % 10;
             int h = (ipRDetails.StartTime / 100) % 10;
@@ -42,7 +44,7 @@ namespace TableManagement
 
         private void Window_Closed(object sender, EventArgs e)
         {
-
+            App.IsCVSnewReservationOpen = false;
         }
 
         private void Btn_Reserve_Click(object sender, RoutedEventArgs e)
